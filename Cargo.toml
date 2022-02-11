@@ -1,0 +1,12 @@
+[package]
+name = "nws-api-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.11", features = ["blocking", "native-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+wkt = "0.9"
+url = { version = "2.2", features = ["serde"] }
+chrono = "0.4"

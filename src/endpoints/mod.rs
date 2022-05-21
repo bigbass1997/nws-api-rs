@@ -6,6 +6,7 @@ use wkt::Wkt;
 
 pub mod gridpoints;
 pub mod points;
+pub mod radar;
 pub mod stations;
 
 

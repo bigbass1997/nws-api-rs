@@ -5,6 +5,7 @@ use reqwest::Error;
 use serde::de::DeserializeOwned;
 use crate::endpoints::gridpoints::{Gridpoint, GridpointStations};
 use crate::endpoints::points::Point;
+use crate::endpoints::radar::{crawl, RadarType, RemoteFile};
 use crate::endpoints::stations::{Observation, ObservationCollection, ObservationStation, ObservationStationCollection};
 
 pub mod endpoints;
@@ -34,6 +35,7 @@ pub type Result<T> = std::result::Result<T, NwsError>;
 /// Client used to access the NWS API endpoints.
 /// 
 /// All functions are blocking.
+#[derive(Debug)]
 pub struct NwsClient {
     req: ReqClient,
 }
@@ -94,6 +96,11 @@ impl NwsClient {
     
     pub fn points(&self, lat: f64, lon: f64) -> Result<Point> {
         parse_result(get(&self.req, &format!("/points/{:.4},{:.4}", lat, lon), None))
+    }
+    
+    
+    pub fn radar(&self, id: &str, radar_type: RadarType) -> Result<Vec<RemoteFile>> {
+        crawl(&self.req, format!("https://mrms.ncep.noaa.gov/data/RIDGEII/L2/{}/{}/", id, radar_type))
     }
 }
 

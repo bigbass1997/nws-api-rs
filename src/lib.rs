@@ -37,7 +37,7 @@ pub type Result<T> = std::result::Result<T, NwsError>;
 /// All functions are blocking.
 #[derive(Debug)]
 pub struct NwsClient {
-    req: ReqClient,
+    pub req: ReqClient,
 }
 impl NwsClient {
     pub fn new(user_agent: &str) -> Result<NwsClient> {

@@ -3,6 +3,7 @@ use chrono::{DateTime, NaiveDateTime, Utc};
 use select::document::Document;
 use select::node::Node;
 use select::predicate::{Child, Name};
+use serde::{Serialize, Serializer};
 use url::Url;
 use crate::{NwsError, ReqClient};
 
@@ -44,6 +45,11 @@ impl Display for RadarType {
             Cref => "CREF",
             Hvil => "HVIL",
         })
+    }
+}
+impl Serialize for RadarType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+        serializer.serialize_str(&self.to_string())
     }
 }
 impl RadarType {

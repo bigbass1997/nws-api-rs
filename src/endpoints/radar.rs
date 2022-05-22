@@ -3,7 +3,8 @@ use chrono::{DateTime, NaiveDateTime, Utc};
 use select::document::Document;
 use select::node::Node;
 use select::predicate::{Child, Name};
-use serde::{Serialize, Serializer};
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use serde::de::{EnumAccess, Error, MapAccess, SeqAccess, Unexpected, Visitor};
 use url::Url;
 use crate::{NwsError, ReqClient};
 
@@ -50,6 +51,39 @@ impl Display for RadarType {
 impl Serialize for RadarType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
         serializer.serialize_str(&self.to_string())
+    }
+}
+impl<'de> Deserialize<'de> for RadarType {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
+        struct RadarTypeVisitor;
+        impl<'de> Visitor<'de> for RadarTypeVisitor {
+            type Value = RadarType;
+            fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
+                formatter.write_str("A string matching the Display impl for RadarType.")
+            }
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E> where E: Error {
+                use RadarType::*;
+                match v {
+                    "BREF_RAW" => Ok(BrefRaw),
+                    "BVEL_RAW" => Ok(BvelRaw),
+                    "BDHC" => Ok(Bdhc),
+                    "BDSA" => Ok(Bdsa),
+                    "BDZD" => Ok(Bdzd),
+                    "BEET" => Ok(Beet),
+                    "BOHP" => Ok(Bohp),
+                    "BREF" => Ok(Bref),
+                    "BSRM" => Ok(Bsrm),
+                    "BSTA" => Ok(Bsta),
+                    "BSTP" => Ok(Bstp),
+                    "BVEL" => Ok(Bvel),
+                    "CREF" => Ok(Cref),
+                    "HVIL" => Ok(Hvil),
+                    _ => Err(de::Error::invalid_value(Unexpected::Str(v), &"RadarType variant Display value"))
+                }
+            }
+        }
+        
+        deserializer.deserialize_identifier(RadarTypeVisitor)
     }
 }
 impl RadarType {

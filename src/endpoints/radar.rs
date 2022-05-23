@@ -4,12 +4,12 @@ use select::document::Document;
 use select::node::Node;
 use select::predicate::{Child, Name};
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
-use serde::de::{EnumAccess, Error, MapAccess, SeqAccess, Unexpected, Visitor};
+use serde::de::{Error, Unexpected, Visitor};
 use url::Url;
 use crate::{NwsError, ReqClient};
 
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum RadarType {
     BrefRaw,
     BvelRaw,
